@@ -20,6 +20,7 @@ class LoginController extends Controller
             $user = User::where('email', $credentials['email'])->firstOrFail();
             $token = $user->createToken('userToken')->plainTextToken;
             return response()->json([
+                'status' => 200,
                 'user' => $user,
                 'token' => $token
             ]);
@@ -27,6 +28,7 @@ class LoginController extends Controller
 
         return response()->json([
             'errors' => [
+                'status' => 401,
                 'message' => 'Invalid Credentials.',
             ]
         ]);
@@ -38,7 +40,7 @@ class LoginController extends Controller
         $request->session()->regenerateToken();
         return response()->json([
             'status' => '200',
-            'message' => 'Ha cerrado su sesión exitosamente.'
+            'message' => 'Session closed successfully.'
         ]);
     }
 }

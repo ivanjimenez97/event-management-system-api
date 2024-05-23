@@ -19,7 +19,17 @@ use App\Http\Controllers\LoginController;
 
 //Authentication
 Route::post('login', [LoginController::class, 'authenticate']);
+//Logout
+Route::post('logout', [LoginController::class, 'logout']);
+//Registration
+Route::post('registration', [LoginController::class, 'register']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+
+Route::prefix('v1')->group(function () {
+    Route::prefix('users')->group(function () {
+    });
 });
