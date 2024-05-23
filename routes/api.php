@@ -3,6 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+//End User
+use App\Http\Controllers\LoginController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,6 +16,9 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+//Authentication
+Route::post('login', [LoginController::class, 'authenticate']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
