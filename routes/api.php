@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 //End User
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\RegistrationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +23,7 @@ Route::post('login', [LoginController::class, 'authenticate']);
 //Logout
 Route::post('logout', [LoginController::class, 'logout']);
 //Registration
-Route::post('registration', [LoginController::class, 'register']);
+Route::post('registration', [RegistrationController::class, 'register']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
