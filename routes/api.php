@@ -17,24 +17,19 @@ use App\Http\Controllers\API\Auth\AuthController;
 |
 */
 
-//Authentication
-Route::prefix('auth')->group(function () {
-    //Registration
-    Route::post('registration', [AuthController::class, 'register']);
-
-    //Login
-    Route::post('login', [AuthController::class, 'login']);
-
-    //Logout
+// Auth Routes
+Route::middleware('guest')->prefix('auth')->group(function () {
+    Route::post('register', [AuthController::class, 'register'])->name('register');
+    Route::post('login', [AuthController::class, 'login'])->name('login');
     Route::post('logout', [AuthController::class, 'logout']);
+
+    Route::post('/forgot', [AuthController::class, 'forgot']);
+    Route::post('/reset', [AuthController::class, 'reset']);
 });
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-
-Route::prefix('v1')->group(function () {
-    Route::prefix('users')->group(function () {
-    });
+// Authenticated Routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function () {
+        return auth()->user();
+    })->name('users.index');
 });

@@ -22,18 +22,24 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        User::create([
+        $testOrganizer = User::create([
             'name' => 'Organizer User',
             'email' => 'ivanjimenezl@outlook.com',
+            'phone' => 8340928421,
             'password' => Hash::make('12345'),
             'type' => 'organizer',
         ]);
 
-        User::create([
+        $testOrganizer->createToken('authToken')->plainTextToken;
+
+        $testVisitor = User::create([
             'name' => 'Visitor User',
             'email' => 'ivaneduardojimenezleon@gmail.com',
+            'phone' => 7549273292,
             'password' => Hash::make('12345'),
             'type' => 'visitor',
         ]);
+
+        $testVisitor->createToken('authToken')->plainTextToken;
     }
 }
