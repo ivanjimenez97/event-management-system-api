@@ -44,13 +44,11 @@ class AuthController extends Controller
             'token' => $token
         ];
 
-        return response()->json(
-            [
-                'status' => 201,
-                'message' => 'User Registered Successfully',
-                'data' => $loginResponse
-            ]
-        );
+        return response()->json([
+            'status' => 201,
+            'message' => 'User Registered Successfully',
+            'data' => $loginResponse
+        ]);
     }
 
     public function login(Request $request)
@@ -73,6 +71,9 @@ class AuthController extends Controller
             ]);
         }
 
+
+        //$authUser = auth('sanctum')->user();
+
         // Get Token for Authenticated User
         $token = $user->createToken('authToken')->plainTextToken;
 
@@ -85,19 +86,26 @@ class AuthController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'You have successfully logged in.',
-            'data' => $loginResponse
-
+            'data' => $loginResponse,
+            //'authUser' =>  $authUser
         ]);
     }
 
     public function logout(Request $request)
     {
+        //$authUser = auth('sanctum')->user();
+
         $user = User::where('email', $request->email)->first();
         $user->tokens()->delete();
+
+        //$request->session()->invalidate();
+        //$this->guard()->logout();
+
         return response()->json([
             'status' => 200,
             'message' => 'Logged out successfully.',
-            'user' => $user
+            'user' => $user,
+            //'authUser' =>  $authUser
         ]);
     }
 
