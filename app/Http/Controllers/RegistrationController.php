@@ -44,7 +44,7 @@ class RegistrationController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 400,
-                'message' => 'User was not generated. Please verify the data and send the request again.'
+                'message' => 'User not generated. Please verify the data and send the request again.'
             ]);
         }
     }
