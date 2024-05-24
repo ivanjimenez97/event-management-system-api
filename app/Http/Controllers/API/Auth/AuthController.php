@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API\Auth;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-class RegistrationController extends Controller
+class AuthController extends Controller
 {
     public function register(Request $request)
     {
@@ -47,5 +49,41 @@ class RegistrationController extends Controller
                 'message' => 'User not generated. Please verify the data and send the request again.'
             ]);
         }
+    }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            $user = User::where('email', $credentials['email'])->firstOrFail();
+            $token = $user->createToken('userToken')->plainTextToken;
+            return response()->json([
+                'status' => 200,
+                'user' => $user,
+                'token' => $token
+            ]);
+        }
+
+        return response()->json([
+            'errors' => [
+                'status' => 401,
+                'message' => 'Invalid Credentials.',
+            ]
+        ]);
+    }
+
+    public function logout(Request $request)
+    {
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return response()->json([
+            'status' => '200',
+            'message' => 'Session closed successfully.'
+        ]);
     }
 }

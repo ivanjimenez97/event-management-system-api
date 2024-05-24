@@ -4,8 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 //End User
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\RegistrationController;
+use App\Http\Controllers\API\Auth\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,11 +18,16 @@ use App\Http\Controllers\RegistrationController;
 */
 
 //Authentication
-Route::post('login', [LoginController::class, 'authenticate']);
-//Logout
-Route::post('logout', [LoginController::class, 'logout']);
-//Registration
-Route::post('registration', [RegistrationController::class, 'register']);
+Route::prefix('auth')->group(function () {
+    //Registration
+    Route::post('registration', [AuthController::class, 'register']);
+
+    //Login
+    Route::post('login', [AuthController::class, 'login']);
+
+    //Logout
+    Route::post('logout', [AuthController::class, 'logout']);
+});
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
