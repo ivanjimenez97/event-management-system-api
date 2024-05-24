@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 //End User
 use App\Http\Controllers\API\Auth\AuthController;
+use App\Http\Controllers\API\EventController;
 use App\Http\Controllers\API\ProfileController;
 
 /*
@@ -31,6 +32,14 @@ Route::prefix('auth')->group(function () {
 Route::prefix('profile')->group(function () {
     Route::get('/show/{id?}', [ProfileController::class, 'show']);
     Route::put('/update', [ProfileController::class, 'update']);
+});
+
+Route::prefix('events')->group(function () {
+    Route::get('/', [EventController::class, 'index']);
+    Route::post('/save', [EventController::class, 'store']);
+    Route::get('/edit/{id?}', [EventController::class, 'edit']);
+    Route::put('/update/{id?}', [EventController::class, 'update']);
+    Route::delete('/delete/{id?}', [EventController::class, 'destroy']);
 });
 
 
