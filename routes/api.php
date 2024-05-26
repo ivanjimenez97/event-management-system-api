@@ -19,7 +19,7 @@ use App\Http\Controllers\API\ProfileController;
 |
 */
 
-// Auth Routes
+// Authenticated Routes
 Route::prefix('auth')->group(function () {
     Route::post('register', [AuthController::class, 'register'])->name('register');
     Route::post('login', [AuthController::class, 'login'])->name('login');
@@ -29,22 +29,31 @@ Route::prefix('auth')->group(function () {
     Route::post('/reset', [AuthController::class, 'reset']);
 })->middleware('auth:sanctum');
 
+
 Route::prefix('profile')->group(function () {
     Route::get('/show/{id?}', [ProfileController::class, 'show']);
     Route::put('/update', [ProfileController::class, 'update']);
 });
 
+
 Route::prefix('events')->group(function () {
+    //Crud endpoints
     Route::get('/', [EventController::class, 'index']);
     Route::post('/save', [EventController::class, 'store']);
     Route::get('/edit/{id?}', [EventController::class, 'edit']);
     Route::put('/update/{id?}', [EventController::class, 'update']);
     Route::delete('/delete/{id?}', [EventController::class, 'destroy']);
+
+    //Organizer's event endpoints
     Route::get('/organizer/{organizerId?}', [EventController::class, 'getOrganizerEvents']);
+    
+    //Visitor's event endpoints
+    Route::prefix('visitor')->group(function(){
+        Route::get('/available-events', [EventController::class, 'getAvailableEvents']);
+    });
 });
 
 
-// Authenticated Routes
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/user', function () {

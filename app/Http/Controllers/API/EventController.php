@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+
 
 class EventController extends Controller
 {
@@ -174,6 +176,22 @@ class EventController extends Controller
 
         return response()->json([
             'myEvents' => $myEvents
+        ]);
+    }
+
+    public function getAvailableEvents(){
+         
+        //$currentDate = Carbon::now();   
+        $currentDate = Carbon::now()->toDateString();   
+
+        $availableEvents = Event::select('title', 'date', 'time', 'location', 'status', 'organizer_id')
+            ->where('status', 'available')
+            ->whereDate('date', '>=', $currentDate)
+            ->with('organizer')
+            ->get();
+
+        return response()->json([
+            'availableEvents' => $availableEvents
         ]);
     }
 }
