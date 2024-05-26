@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\EventController;
 use App\Http\Controllers\API\ProfileController;
+use App\Http\Controllers\API\TicketController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,6 +52,16 @@ Route::prefix('events')->group(function () {
     Route::prefix('visitor')->group(function(){
         Route::get('/available-events', [EventController::class, 'getAvailableEvents']);
     });
+});
+
+
+Route::prefix('tickets')->group(function () {
+    //Crud endpoints
+    Route::get('/', [TicketController::class, 'index']);
+    Route::post('/save', [TicketController::class, 'store']);
+    Route::get('/show/{id?}', [TicketController::class, 'show']);
+    Route::put('/update/{id?}', [TicketController::class, 'update']);
+    Route::delete('/delete/{id?}', [TicketController::class, 'destroy']);
 });
 
 
