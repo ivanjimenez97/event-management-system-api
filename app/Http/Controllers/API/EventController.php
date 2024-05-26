@@ -116,7 +116,7 @@ class EventController extends Controller
         if ($isOrganizer->type !== 'organizer') {
             return response()->json([
                 'status' => 403,
-                'message' => "You don't have the right access to upadte events.",
+                'message' => "You don't have the right access to update events.",
                 'user_type' => $isOrganizer->type
             ]);
         }
@@ -153,6 +153,27 @@ class EventController extends Controller
             'status' => 500,
             'message' => 'An Error Occured. Please verify the data provided and try again.',
             'data' => $record
+        ]);
+    }
+
+
+    public function getOrganizerEvents(int $organizerId){
+
+        //Verifying if the user type is organizer
+        $isOrganizer = User::where('id', $organizerId)->firstOrFail();
+
+        if ($isOrganizer->type !== 'organizer') {
+            return response()->json([
+                'status' => 403,
+                'message' => "You don't have the right access to see organizer records.",
+                'user_type' => $isOrganizer->type
+            ]);
+        }
+
+        $myEvents = Event::where('organizer_id', $organizerId)->get();
+
+        return response()->json([
+            'myEvents' => $myEvents
         ]);
     }
 }

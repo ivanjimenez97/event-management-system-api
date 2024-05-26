@@ -40,6 +40,7 @@ Route::prefix('events')->group(function () {
     Route::get('/edit/{id?}', [EventController::class, 'edit']);
     Route::put('/update/{id?}', [EventController::class, 'update']);
     Route::delete('/delete/{id?}', [EventController::class, 'destroy']);
+    Route::get('/organizer/{organizerId?}', [EventController::class, 'getOrganizerEvents']);
 });
 
 
