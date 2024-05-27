@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Mail\EventUpdateNotification;
 use App\Models\Event;
+use App\Models\PurchasedTicket;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\Mail;
 
 class EventController extends Controller
 {
@@ -116,6 +118,8 @@ class EventController extends Controller
         //Verifying if the user type is organizer
         $isOrganizer = User::where('id', $data['organizer_id'])->firstOrFail();
 
+
+
         if ($isOrganizer->type !== 'organizer') {
             return response()->json([
                 'status' => 403,
@@ -124,16 +128,36 @@ class EventController extends Controller
             ]);
         }
 
+        $purchasedTickets = PurchasedTicket::where('event_id', $id)->with('user')->get();
+        $uniqueUsers = collect();
+
         if ($record->save()) {
+            foreach ($purchasedTickets as $ticket) {
+                $user = $ticket->user;
+
+                if (!$uniqueUsers->contains('id', $user->id)) {
+                    // Add the user to the unique collection
+                    $uniqueUsers->push($user);
+                    // Customizing the email data
+                    $data = [
+                        'user' => $user,
+                        'event' => $record,
+                    ];
+                    Mail::to($user->email)->send(new EventUpdateNotification($data));
+                }
+            }
+
             return response()->json([
                 'status' => 200,
                 'message' => 'Event was updated successfully.',
-                'data' => $record
+                'data' => $record,
+                'purchasedTickets' => $purchasedTickets
             ]);
         }
         return response()->json([
             'status' => 404,
-            'message' => 'An Error Occured. Please verify the data provided.'
+            'message' => 'An Error Occured. Please verify the data provided.',
+            'data' => $record
         ]);
     }
 
