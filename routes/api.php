@@ -53,6 +53,7 @@ Route::prefix('events')->group(function () {
 
     //Visitor's event endpoints
     Route::prefix('visitor')->group(function () {
+        Route::get('/my-events/{visitorId?}', [EventController::class, 'getVisitorEvents']);
         Route::get('/available-events', [EventController::class, 'getAvailableEvents']);
     });
 });

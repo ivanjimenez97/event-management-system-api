@@ -205,6 +205,29 @@ class EventController extends Controller
         ]);
     }
 
+    public function getVisitorEvents(int $visitorId)
+    {
+        //Verifying if the user type is organizer
+        $isVisitor = User::where('id', $visitorId)->firstOrFail();
+
+        if ($isVisitor->type !== 'visitor') {
+            return response()->json([
+                'status' => 403,
+                'message' => "You don't have the right access to see visitor records.",
+                'user_type' => $isVisitor->type
+            ]);
+        }
+
+        $myEvents = PurchasedTicket::where('user_id', $visitorId)
+            ->with('ticket')
+            ->with('event')
+            ->get();
+
+        return response()->json([
+            'myEvents' => $myEvents
+        ]);
+    }
+
     public function getAvailableEvents()
     {
         //$currentDate = Carbon::now();   
