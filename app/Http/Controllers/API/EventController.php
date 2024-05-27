@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Mail\EventReminder;
 use App\Mail\EventUpdateNotification;
 use App\Models\Event;
 use App\Models\PurchasedTicket;
@@ -151,7 +152,7 @@ class EventController extends Controller
                 'status' => 200,
                 'message' => 'Event was updated successfully.',
                 'data' => $record,
-                'purchasedTickets' => $purchasedTickets
+                //'purchasedTickets' => $purchasedTickets
             ]);
         }
         return response()->json([
@@ -219,6 +220,52 @@ class EventController extends Controller
         return response()->json([
             'availableEvents' => $availableEvents,
             'currentDate' => $currentDate
+        ]);
+    }
+
+    public function sendReminder(Request $request)
+    {
+        $data = $request->all();
+        $request->validate([
+            'organizer_id' => 'required|numeric|min:1',
+            'event_id' => 'required|numeric|min:1',
+        ]);
+
+        $isOrganizer = User::where('id', $data['organizer_id'])->firstOrFail();
+
+        if ($isOrganizer->type !== 'organizer') {
+            return response()->json([
+                'status' => 403,
+                'message' => "You don't have the right access to send event reminders.",
+                'user_type' => $isOrganizer->type
+            ]);
+        }
+
+        $event = Event::where('id', $data['event_id'])->firstOrFail();
+        $purchasedTickets = PurchasedTicket::where('event_id', $data['event_id'])->with('user')->get();
+        $uniqueUsers = collect();
+
+
+        foreach ($purchasedTickets as $ticket) {
+            $user = $ticket->user;
+
+            if (!$uniqueUsers->contains('id', $user->id)) {
+                // Add the user to the unique collection
+                $uniqueUsers->push($user);
+                // Customizing the email data
+                $data = [
+                    'user' => $user,
+                    'event' => $event,
+                ];
+                Mail::to($user->email)->send(new EventReminder($data));
+            }
+        }
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Event reminder was sent successfully.',
+            'data' => $event,
+            'purchasedTickets' => $purchasedTickets
         ]);
     }
 }

@@ -46,7 +46,10 @@ Route::prefix('events')->group(function () {
     Route::delete('/delete/{id?}', [EventController::class, 'destroy']);
 
     //Organizer's event endpoints
-    Route::get('/organizer/{organizerId?}', [EventController::class, 'getOrganizerEvents']);
+    Route::prefix('organizer')->group(function () {
+        Route::get('/{organizerId?}', [EventController::class, 'getOrganizerEvents']);
+        Route::post('/send-reminder', [EventController::class, 'sendReminder']);
+    });
 
     //Visitor's event endpoints
     Route::prefix('visitor')->group(function () {
