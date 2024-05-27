@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
+use Carbon\Carbon;
 
 
 class EventController extends Controller
@@ -160,8 +160,8 @@ class EventController extends Controller
     }
 
 
-    public function getOrganizerEvents(int $organizerId){
-
+    public function getOrganizerEvents(int $organizerId)
+    {
         //Verifying if the user type is organizer
         $isOrganizer = User::where('id', $organizerId)->firstOrFail();
 
@@ -189,10 +189,12 @@ class EventController extends Controller
             ->where('status', 'available')
             ->whereDate('date', '>=', $currentDate)
             ->with('organizer')
+            ->with('tickets')
             ->get();
 
         return response()->json([
-            'availableEvents' => $availableEvents
+            'availableEvents' => $availableEvents,
+            'currentDate' => $currentDate
         ]);
     }
 }
