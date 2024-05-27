@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class PurchasedTicket extends Model
 {
@@ -16,13 +15,20 @@ class PurchasedTicket extends Model
         'ticket_id'
     ];
 
-    public function ticket():HasOne
+    public function ticket(): BelongsTo
     {
-        return $this->hasOne(Ticket::class);
+        return $this->belongsTo(Ticket::class);
     }
 
-    public function user():HasOne
+    public function user(): BelongsTo
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class);
+    }
+
+    // Define the relationship to retrieve the event data
+    public function event(): BelongsTo
+    {
+        // Assuming the 'event_id' column exists in the 'tickets' table
+        return $this->belongsTo(Event::class);
     }
 }

@@ -40,6 +40,7 @@ class PurchasedTicketConfirmation extends Mailable
     {
         return new Content(
             view: 'emails.purchased_ticket_confirmation',
+            with: ['data']
         );
     }
 

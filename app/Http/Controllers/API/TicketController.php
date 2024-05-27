@@ -58,7 +58,7 @@ class TicketController extends Controller
                 'data' => $record
             ]);
         }
-            
+
         return response()->json([
             'status' => 404,
             'message' => 'An Error Occured. Please verify the data provided.',
@@ -73,7 +73,7 @@ class TicketController extends Controller
     {
         $record = Ticket::where('id', $id)->firstOrFail();
 
-        if(!$record){
+        if (!$record) {
             return response()->json([
                 'status' => 404,
                 'message' => 'An Error Occured. Please verify the data provided.',
@@ -121,7 +121,7 @@ class TicketController extends Controller
                 'data' => $record
             ]);
         }
-            
+
         return response()->json([
             'status' => 404,
             'message' => 'An Error Occured. Please verify the data provided.',
@@ -165,11 +165,11 @@ class TicketController extends Controller
 
         //Getting the user specified in the request.
         $user = User::where('id', $data['user_id'])->firstOrFail();
-        
+
         if ($record->save()) {
             //Getting Purchased Ticket with Ticket and User Data.
             $purchasedTicket = PurchasedTicket::where('id', $record->id)
-                ->with(['ticket' => function($query){
+                ->with(['ticket' => function ($query) {
                     $query->with('event');
                 }])
                 ->with('user')
@@ -177,7 +177,7 @@ class TicketController extends Controller
 
             //Sending Email Confirmation to the user.
             Mail::to($user->email)->send(new PurchasedTicketConfirmation($purchasedTicket));
-            
+
             return response()->json([
                 'status' => 200,
                 'message' => 'Ticket purchased successfully.',
