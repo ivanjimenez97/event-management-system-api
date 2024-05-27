@@ -73,7 +73,8 @@ class EventController extends Controller
         } else {
             return response()->json([
                 'status' => 404,
-                'message' => 'An Error Occured. Please verify the data provided.'
+                'message' => 'An Error Occured. Please verify the data provided.',
+                'data' => $record
             ]);
         }
     }

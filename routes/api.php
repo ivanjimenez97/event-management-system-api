@@ -62,6 +62,8 @@ Route::prefix('tickets')->group(function () {
     Route::get('/show/{id?}', [TicketController::class, 'show']);
     Route::put('/update/{id?}', [TicketController::class, 'update']);
     Route::delete('/delete/{id?}', [TicketController::class, 'destroy']);
+    Route::post('/purchase', [TicketController::class, 'purchase']);
+
 });
 
 

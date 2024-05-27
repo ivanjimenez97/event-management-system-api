@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Mail\PurchasedTicketConfirmation;
+use App\Models\PurchasedTicket;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class TicketController extends Controller
 {
@@ -145,5 +148,44 @@ class TicketController extends Controller
             'message' => 'An Error Occured. Please verify the data provided and try again.',
             'data' => $record
         ]);
+    }
+
+    public function purchase(Request $request)
+    {
+        $data = $request->all();
+        //Validating data
+        $request->validate([
+            'user_id' => 'required|numeric|min:1',
+            'ticket_id' => 'required|numeric|min:1'
+        ]);
+
+        $record = new PurchasedTicket();
+        $record->fill($data);
+
+        //Getting the user specified in the request.
+        $user = User::where('id', $data['user_id'])->firstOrFail();
+        
+        if ($record->save()) {
+            //Getting Purchased Ticket with Ticket and User Data.
+            $purchasedTicket = PurchasedTicket::where('id', $record->id)
+                ->with('ticket')
+                ->with('user')
+                ->firstOrFail();
+
+            //Sending Email Confirmation to the user.
+            Mail::to($user->email)->send(new PurchasedTicketConfirmation($purchasedTicket));
+            
+            return response()->json([
+                'status' => 200,
+                'message' => 'Ticket purchased successfully.',
+                'data' => $record,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'message' => 'An Error Occured. Please verify the data provided.',
+                'data' => $record
+            ]);
+        }
     }
 }
