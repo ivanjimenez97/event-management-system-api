@@ -179,6 +179,7 @@ class TicketController extends Controller
                 'status' => 200,
                 'message' => 'Ticket purchased successfully.',
                 'data' => $record,
+                'purchasedTicket' => $purchasedTicket
             ]);
         } else {
             return response()->json([
