@@ -191,4 +191,18 @@ class TicketController extends Controller
             ]);
         }
     }
+
+    public function myPurchasedTickets(int $userId)
+    {
+        $myPurchasedTickets = PurchasedTicket::where('user_id', $userId)
+            ->with('user')
+            ->with('event')
+            ->with('ticket')
+            ->get();
+
+        return response()->json([
+            'status' => 200,
+            'data' => $myPurchasedTickets
+        ]);
+    }
 }

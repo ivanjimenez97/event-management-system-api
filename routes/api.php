@@ -47,9 +47,9 @@ Route::prefix('events')->group(function () {
 
     //Organizer's event endpoints
     Route::get('/organizer/{organizerId?}', [EventController::class, 'getOrganizerEvents']);
-    
+
     //Visitor's event endpoints
-    Route::prefix('visitor')->group(function(){
+    Route::prefix('visitor')->group(function () {
         Route::get('/available-events', [EventController::class, 'getAvailableEvents']);
     });
 });
@@ -63,8 +63,10 @@ Route::prefix('tickets')->group(function () {
     Route::put('/update/{id?}', [TicketController::class, 'update']);
     Route::delete('/delete/{id?}', [TicketController::class, 'destroy']);
     Route::post('/purchase', [TicketController::class, 'purchase']);
-
+    Route::get('/my-purchase-history/{userId?}', [TicketController::class, 'myPurchasedTickets']);
 });
+
+
 
 
 Route::middleware('auth:sanctum')->group(function () {
