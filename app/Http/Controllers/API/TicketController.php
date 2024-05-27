@@ -20,6 +20,7 @@ class TicketController extends Controller
         $tickets = Ticket::all();
 
         return response()->json([
+            'status' => 200,
             'tickets' => $tickets,
         ]);
     }
@@ -168,7 +169,9 @@ class TicketController extends Controller
         if ($record->save()) {
             //Getting Purchased Ticket with Ticket and User Data.
             $purchasedTicket = PurchasedTicket::where('id', $record->id)
-                ->with('ticket')
+                ->with(['ticket' => function($query){
+                    $query->with('event');
+                }])
                 ->with('user')
                 ->firstOrFail();
 
