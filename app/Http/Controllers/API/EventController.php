@@ -173,7 +173,7 @@ class EventController extends Controller
             ]);
         }
 
-        $myEvents = Event::where('organizer_id', $organizerId)->get();
+        $myEvents = Event::where('organizer_id', $organizerId)->with('tickets')->get();
 
         return response()->json([
             'myEvents' => $myEvents
