@@ -180,12 +180,12 @@ class EventController extends Controller
         ]);
     }
 
-    public function getAvailableEvents(){
-         
+    public function getAvailableEvents()
+    {
         //$currentDate = Carbon::now();   
-        $currentDate = Carbon::now()->toDateString();   
+        $currentDate = Carbon::now()->toDateString();
 
-        $availableEvents = Event::select('title', 'date', 'time', 'location', 'status', 'organizer_id')
+        $availableEvents = Event::select('id', 'title', 'date', 'time', 'location', 'status', 'organizer_id')
             ->where('status', 'available')
             ->whereDate('date', '>=', $currentDate)
             ->with('organizer')
