@@ -169,10 +169,9 @@ class TicketController extends Controller
         if ($record->save()) {
             //Getting Purchased Ticket with Ticket and User Data.
             $purchasedTicket = PurchasedTicket::where('id', $record->id)
-                ->with(['ticket' => function ($query) {
-                    $query->with('event');
-                }])
                 ->with('user')
+                ->with('event')
+                ->with('ticket')
                 ->firstOrFail();
 
             //Sending Email Confirmation to the user.

@@ -12,6 +12,7 @@ class PurchasedTicket extends Model
 
     protected $fillable = [
         'user_id',
+        'event_id',
         'ticket_id'
     ];
 
@@ -28,7 +29,6 @@ class PurchasedTicket extends Model
     // Define the relationship to retrieve the event data
     public function event(): BelongsTo
     {
-        // Assuming the 'event_id' column exists in the 'tickets' table
-        return $this->belongsTo(Event::class);
+        return $this->belongsTo(Event::class, 'event_id');
     }
 }

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('purchased_tickets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('event_id')->constrained('events');
             $table->foreignId('ticket_id')->constrained('tickets');
             $table->timestamps();
         });
